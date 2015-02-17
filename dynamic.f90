@@ -1477,7 +1477,7 @@ program DynamicModel
     !Estimate Parameters
     !************************************
     call cpu_time(tic)
-    !call dynamic_min_simplex
+    call dynamic_min_simplex
     call cpu_time(toc)
     print *, 'Time to compute theta:', (toc-tic)/60, '  minutes'
 
