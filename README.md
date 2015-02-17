@@ -1,2 +1,1 @@
-# Dynamic_Adoption
-This is the code that I generated for one of my dissertation papers, "A Dynamic Adoption Model with Bayesian Learning: An Application to U.S. Soybean Farmers", which was published in Agricultural Economics, DOI: 10.1111/agec.12124 in 2014.
+This is the main Fortran 90 code that I generated for one of my dissertation chapters, "A Dynamic Adoption Model with Bayesian Learning: An Application to U.S. Soybean Farmers", which was published in Agricultural Economics in 2014 (DOI: 10.1111/agec.12124).
