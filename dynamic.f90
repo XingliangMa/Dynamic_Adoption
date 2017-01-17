@@ -1,48 +1,7 @@
 !*********************************
 !Dynamic Adoption Model
-!by Xingliang Ma. ma.xingliang@gmail.com
+!by Xingliang Ma
 !*********************************
-
-!---------------------------------
-!Version: Oct 30. 2010
-!Changes:
-! utility function: total variance
-! mean profit: back to before
-! prior averaged with different sigma_ict (not yet)
-! fixed intruments(lagged value)
-!Results:
-! not good
-!---------------------------
-
-!Version: Nov 7. 2010
-!Changes:
-! utility function
-!---------------------------------
-
-!Version: Dec 3. 2010
-!Changes:
-! initial value: from myopic iterative GMM
-!---------------------------------
-
-!Version: June 20, 2011
-!Changes: 
-! update to the April version: testing the problem of April version.
-!---------------------------------
-
-!Version: August 20, 2012
-!Changes: 
-! update to the April version: new initial values. linear regression
-!---------------------------------
-
-!Version: Feburary 16, 2015
-!Changes: 
-! editorial changes to put it on github
-!---------------------------------
-
-!To do:
-! parallel compute
-!---------------------------------
-
 
 
 module Global_Vars
@@ -321,45 +280,9 @@ subroutine sim_AR1(y, prob, Tran, z , index_z)
 
 end subroutine sim_AR1
 
-
-subroutine sim_AR1_sim(y, prob, Tran, z , index_z)
-    implicit none
-
-    !y: population of z
-    !prob: invariant probability of y
-    !Tran: transition matrix
-    !z: simulation for each farmer at each year
-    real(8), intent(in) :: y(:), prob(:), Tran(:, :)
-    real(8), intent(inout) :: z(:, :)
-
-    integer :: index_z(size(z,1), size(z,2))   !index of z
-
-    integer :: i, j, t, Nn, NsimZ
-
-    Nn = size(z,1)
-    NsimZ = size(z, 2)
-
-    call set_seed(1234, 4321, 4231, 4123)
-    !print*
-    do i = 1, Nn, 5
-
-        do j = 1, NsimZ  !simulate each z at steady state
-            call get_sample(y, prob, z(i,j), index_z(i,j)) 
-        end do
-
-        do t = 1, 4  ! following years
-
-            do j = 1, NsimZ  !simulate each z according to transition probability
-                call get_sample(y, Tran(index_z(i+t-1, j), :),  z(i+t, j), index_z(i+t, j) ) 
-            end do
-
-        end do
-
-    end do
-
-end subroutine sim_AR1_sim
-
 end module AR1
+
+
 
 module DP
     use Global_Vars
@@ -413,34 +336,6 @@ subroutine myprint(names, theta, se)
     end if
 
 end subroutine myprint
-
-subroutine myprint_tex(names, theta, theta_myopic, theta_initial)
-    IMPLICIT NONE 
-    character(len=*), intent(in) :: names(:)
-    real(8), intent(in) :: theta(:)
-    real(8), intent(in), optional :: theta_myopic(:)
-    real(8), intent(in), optional :: theta_initial(:)
-
-    integer :: i
-
-    ! if printing se
-    if (present(theta_myopic) .AND. present(theta_initial)) then
-        do i = 1, size(theta)-1
-            write(*, '(4A, F12.4, A, F12.4, A, F12.4, A)') & 
-            '$\', names(i), '$', ' &', theta(i), ' &', theta_myopic(i), '  &', theta_initial(i), '  \\'
-        end do
-
-        write(*, '(4A, F12.4, A, A, A, F12.4, A)') & 
-        '$\', names(size(theta)), '$', ' &', theta(size(theta)), ' &', '            ', '  &', theta_initial(size(theta)), '  \\'
-
-    end if
-
-    do i = 1, size(theta)
-        write(*, '(4A, F12.4, A)') '$\' , names(i), ' $' ,  '    &', theta(i), ' \\'
-    end do
-
-
-end subroutine myprint_tex
 
 
 !dynamic obj fuction: put everything in one function
@@ -1179,8 +1074,6 @@ subroutine get_SE(theta, WM, SE)
 
     Sigma_hat = WM
     
-    
-
     AVar = Matrix_Inverse( matmul(matmul(transpose(G_hat), Sigma_hat), G_hat ) )
     se = sqrt(get_diagonal(AVar)/n)
 
@@ -1440,7 +1333,7 @@ subroutine adopt_path_year
         end do
     end do
 
-    observed_average_rate =observed_average_rate/Nfarmer
+    observed_average_rate = observed_average_rate/Nfarmer
     predicted_average_rate = predicted_average_rate/Nfarmer
         
     print*
