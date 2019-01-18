@@ -1393,7 +1393,7 @@ program DynamicModel
     !The last iteration
     Iter = MaxIter 
     W = W_all(Iter, :, :)
-    call get_SE(theta_all(Iter,:), W, se_all(Iter,:) ) 
+    !call get_SE(theta_all(Iter,:), W, se_all(Iter,:) ) 
     call get_SE_Petrin(theta_all(Iter,:), W, se_all(Iter,:) ) 
     eJAC_mean_all(Iter,:) = eJAC_tmp
     call get_Jtest(theta_all(Iter,:))
